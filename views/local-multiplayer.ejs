@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include  ('./css.ejs')%>
+<body>
+    <h1 style = "text-align: center; margin-top: 6%;">Game setup</h1>
+    
+    <form class = "form local-multiplayer-form" action="/localMultiplayer" method = "POST">
+        <div>
+            <p>Number of rounds: </p>
+            <input type = "number" name = "rounds" class = "rounds-inp" required>
+        </div>
+
+        <div>
+            <p>Player 1: </p>
+            <input type = "text" name = "player1" class = "user-inp" required>
+        </div>
+
+        <div>
+            <p>Player 2: </p>
+            <input type = "text" name = "player2" class = "user-inp" required>
+        </div>
+        <button class = "start-local">Let's Go</button>
+    </form>
+
+    
+
+    <% if (msg) { %>
+        <p style = "text-align: center; color: yellow; margin-top: 1%px;"><%= msg%></p>
+    <% } %>
+</body>
+</html>

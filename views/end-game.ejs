@@ -1,0 +1,12 @@
+<html>
+    <%- include  ('./css.ejs')%> 
+
+
+    <body>
+        <h1 style = "text-align: center; color: white; margin-top: 10%; font-size: 3rem;">Scores: </h1>
+        <h2 style = "text-align: center; color: white; margin-top: 6%; font-size: 2em;"><%= player1%> - <%= player2%></h2>
+        <h2 style = "text-align: center; color: white; margin-top: 6%;"><span class = "p1-score"><%= p1_score%></span> - <span class = "p2-score"><%= p2_score%></span</h2>
+        
+        <a href="/"><button class = "end-game-button">Return to home screen</button></a>
+    </body>
+</html>

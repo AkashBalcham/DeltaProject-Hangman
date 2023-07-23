@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include  ('./css.ejs')%>
+<body>
+    <%- include ('./title.ejs')%>
+
+    <!-- <h1 class = "round">Round <%= roundNumber%></h1> -->
+    <h1 class = "round">Round <%= roundNumber%></h1>
+    <h1 class = "setter"><%= setter%>'s turn to set a word</h1>
+    <form class = "form word-set-form" action="/guess/<%= guesserNumber%><%= roundNumber%>" method = "POST">
+        <p style = "text-align: center;">Set the word: </p>
+        <input class = "inp set-word-inp" type="text" name = "setWord">
+        <button class = "set-word-button">Submit</button>
+    </form>
+
+</body>
+</html>

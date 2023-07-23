@@ -1,0 +1,31 @@
+<html>
+    <%- include  ('./css.ejs')%> 
+
+
+    <body>
+        <%- include ('./title.ejs')%>
+        <p class = "username-display"><%= user%></p>
+        <a href="/new-game"><button class = "new-game-button">New Game</button></a>
+        <div class = "button-row row1">
+            <div class = "cell cell1">
+                <img class = "coins-img" src="coins1.png" alt="">
+                <p class = "button-content"><%= statLst['coins']%></p>
+            </div>
+            <div class="cell cell2" onclick = 'window.location.href = "/hints/<%= user%>"'>
+                <img class = "hints-img" src="hints1.png" alt="">
+                <p class = "button-content">Hints</p>
+            </div>
+            
+        </div>
+        <div class = "button-row row2">
+            <div class="cell cell3" onclick = 'window.location.href = "/stats/<%= user%>"'>
+                <img class = "stats-img" src="stats1.png" alt="">
+                <p class = "button-content">Stats</p>
+            </div>
+            <div class="cell cell4" onclick = "window.location.href = '/achievements/<%= user%>'">
+                <img class = "ach-img" src="achievements1.png" alt="">
+                <p class = "button-content ach">Achievements</p>
+            </div>
+        </div>
+    </body>
+</html>

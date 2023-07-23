@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include  ('./css.ejs')%>
+<body>
+
+    
+    <h1 class = "setter"><%= guesser%>'s turn to guess the word</h1>
+    
+    <div class = "display">
+        <div class = "word">
+            <div class = "word-display" data-word = "<%= prevWord%>">
+                <% for(let i=0; i<len; i++) { %>
+                    <p class = "hidden"><%= prevWord[i]%></p>
+                <% } %>
+            </div>
+            <div class = "underline-display">
+                <% for(let i=0; i<len; i++) { %>
+                    <p>_</p>
+                <% } %>
+            </div>
+        </div>
+
+        <div class = "image">
+            <img class = "hangman-img" src="/stage1.png" alt="Hangman">
+        </div>
+    </div>
+    
+
+    <div class = "keyboard-grid">
+        <div class = "unguessed"><p>A</p></div>
+        <div class = "unguessed"><p>B</p></div>
+        <div class = "unguessed"><p>C</p></div>
+        <div class = "unguessed"><p>D</p></div>
+        <div class = "unguessed"><p>E</p></div>
+        <div class = "unguessed"><p>F</p></div>
+        <div class = "unguessed"><p>G</p></div>
+        <div class = "unguessed"><p>H</p></div>
+        <div class = "unguessed"><p>I</p></div>
+        <div class = "unguessed"><p>J</p></div>
+        <div class = "unguessed"><p>K</p></div>
+        <div class = "unguessed"><p>L</p></div>
+        <div class = "unguessed"><p>M</p></div>
+        <div class = "unguessed"><p>N</p></div>
+        <div class = "unguessed"><p>O</p></div>
+        <div class = "unguessed"><p>P</p></div>
+        <div class = "unguessed"><p>Q</p></div>
+        <div class = "unguessed"><p>R</p></div>
+        <div class = "unguessed"><p>S</p></div>
+        <div class = "unguessed"><p>T</p></div>
+        <div class = "unguessed"><p>U</p></div>
+        <div class = "unguessed"><p>V</p></div>
+        <div class = "unguessed"><p>W</p></div>
+        <div class = "unguessed"><p>X</p></div>
+        <div class = "unguessed"><p>Y</p></div>
+        <div class = "unguessed"><p>Z</p></div>
+    </div>
+
+    <div class = "correct">
+        <p style = "text-align: center;">Correct !!</p>
+        <p style = "text-align: center; margin-top: 11%; ">The word was: </p>
+        <p style = "font-weight: bold; color: black; text-align: center; margin-bottom: 0%; font-size: 3rem; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif"><%= prevWord%></p>
+        <a href="/set/<%= g%><%= newRoundNumber%>"><button class = "continue">Continue</button></a>
+    </div>
+    <div class = "wrong">
+        <p style = "text-align: center;">Better luck next time!</p>
+        <p style = "text-align: center;">The word was:</p>
+        <p style = "color: black; text-align: center; font-size: 2rem; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif"><%= prevWord%></p>
+        <a href="/set/<%= g%><%= newRoundNumber%>"><button class = "continue">Continue</button></a>
+    </div>
+
+    <script>
+        const gValue = parseInt('<%= g%>', 10);
+        let wrongGuesses = 0;
+        let correctGuesses = 0;
+        let score = 0;
+        // let p1Score = 0, p2Score = 0;
+        let wordLetters = document.querySelectorAll('.hidden')
+        let wordDisplay = document.querySelector('.word-display');
+        let word = wordDisplay.dataset.word;
+        let letters = document.querySelectorAll('.unguessed');
+        let img = document.querySelector('.hangman-img');
+        let count = 0;
+        letters.forEach(letter => {
+            letter.addEventListener('click', (e) => {
+                if(!letter.hasAttribute('disabled')) {
+                    letter.setAttribute('disabled', true);
+                    if(word.includes((letter.innerText).toLowerCase())) {
+                        count+=word.split((letter.innerText).toLowerCase()).length-1;
+                        // console.log(count);
+                        score += 10*(word.split((letter.innerText).toLowerCase()).length-1);
+                        // console.log(score)
+                        letter.style.color = 'lightgreen';
+                        letter.style['border-color'] = 'lightgreen';
+                        for(let i=0; i<wordLetters.length; i++) {
+                            if(wordLetters[i].innerText === (letter.innerText).toLowerCase()) {
+                                wordLetters[i].style.color = "white";
+                            }
+                        }
+                        if (count === word.length) {
+                            //show a popup
+                            score += 30;
+                            console.log(score)
+                            const lst = { score, gValue }
+                            fetch('/update-scores', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(lst)
+                            })
+                            .then(response => {})
+                            .catch(err => {console.log(err)});
+                            document.querySelector('.correct').style.display = "block";
+                        }
+                    } else {
+                        wrongGuesses++;
+                        letter.style.color = 'red';
+                        letter.style['border-color'] = 'red';
+                        img.src = `/stage${wrongGuesses+1}.png`;
+                        if(wrongGuesses === 6) {
+                            score -= 5;
+                            const lst = { score, gValue }
+                            fetch('/update-scores', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(lst)
+                            })
+                            .then(response => {})
+                            .catch(err => {console.log(err)});
+                            document.querySelector('.wrong').style.display = "block";
+                        }
+                    }
+                }
+            })
+        })
+
+        document.addEventListener('keydown', (e) => {
+                letters.forEach(letter => {
+                    if (e.key === (letter.innerText).toLowerCase()) {
+                        if (!letter.hasAttribute('disabled')) {
+                            if(word.includes((letter.innerText).toLowerCase())) {
+                                count+=word.split((letter.innerText).toLowerCase()).length-1;
+                                // console.log(count);
+                                score += 10*(word.split((letter.innerText).toLowerCase()).length-1);
+                                letter.style.color = 'lightgreen';
+                                letter.style['border-color'] = 'lightgreen';
+                                for(let i=0; i<wordLetters.length; i++) {
+                                    if(wordLetters[i].innerText === (letter.innerText).toLowerCase()) {
+                                        wordLetters[i].style.color = "white";
+                                    }
+                                }
+                                if (count === word.length) {
+                                    //show a popup
+                                    const lst = { score, gValue }
+                                    fetch('/update-scores', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(lst)
+                                    })
+                                    .then(response => {})
+                                    .catch(err => {console.log(err)});
+                                    score += 30;
+                                    document.querySelector('.correct').style.display = "block";
+                                }
+                            } else {
+                                wrongGuesses++;
+                                letter.style.color = 'red';
+                                letter.style['border-color'] = 'red';
+                                img.src = `/stage${wrongGuesses+1}.png`;
+                                if(wrongGuesses === 6) {
+                                    score -= 5;
+                                    const lst = { score, gValue }
+                                    fetch('/update-scores', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(lst)
+                                    })
+                                    .then(response => {})
+                                    .catch(err => {console.log(err)});
+                                    document.querySelector('.wrong').style.display = "block";
+                                }
+                            }
+                        }
+                    }
+                })
+            })
+    </script>
+</body>
+</html>

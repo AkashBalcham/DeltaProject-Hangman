@@ -1,0 +1,28 @@
+<html>
+    <%- include  ('./css.ejs')%> 
+
+
+    <body>
+        <%- include ('./title.ejs')%>
+
+        <form action="/login" method = "POST" class = "form login-form">
+            <!-- <label for="username">Username</label> -->
+            <div class = "username-box">
+                <p style>Username: </p>
+                <input type="text" name = "username" class = "username-inp" required>
+            </div>
+            
+            <!-- <label for="password">Password</label> -->
+            <div class = "password-box">
+                <p>Password: </p>
+                <input type="password" name="password" class = "password-inp" required>
+            </div>
+            
+            <button class = "login-button">Login</button>
+        </form>
+
+        <% if(msg !== '') { %>
+            <p class = "msg"><%= msg%></p>
+        <% } %>
+    </body>
+</html>
